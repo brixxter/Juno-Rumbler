@@ -86,13 +86,6 @@ namespace Assets.Scripts
                 .SetDescription("Strength of acceleration rumble")
                 .SetDefault(1f);
 
-            this.accelMotor = this.CreateNumeric<int>("Acceleration Motor Index", 0, 3, 1)
-                .SetDescription("Motor to be used for acceleration rumble. IMPORTANT: Make sure shock and acceleration aren't using the same motor.")
-                .SetDefault(1);
-
-            this.shockMotor = this.CreateNumeric<int>("Shock Motor Index", 0, 3, 1)
-                .SetDescription("Motor to be used for shock rumble (explosions and stage separations). IMPORTANT: Make sure shock and acceleration aren't using the same motor.")
-                .SetDefault(0);
 
         }
     }

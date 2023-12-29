@@ -31,46 +31,50 @@ public class RumblerScript : MonoBehaviour
         if (craftScript == null) Debug.Log("CraftScript not found");
 
         craftScript.ActiveCommandPod.StageActivated += OnStageActivated;
-
         FlightSceneScript.Instance.ExplosionCreated += OnExplosionCreated;
         FlightSceneScript.Instance.CraftChanged += OnCraftChanged;
     }
 
     void Update()
     {
+        //conditions during which rumble should be disabled
         if (!ModSettings.Instance.accelRumble) return;
         if (Game.Instance.FlightScene.TimeManager.CurrentMode.TimeMultiplier == 0) return;
         if (Game.Instance.FlightScene.CraftNode.IsDestroyed) return;
         if (Game.Instance.FlightScene.TimeManager.CurrentMode.TimeMultiplier >= 10) return;
 
+        //acceleration rumble strength calculation
         float groundedSpeedMultiplier = Mathf.Clamp((float)Vector3d.Magnitude(craftScript.FlightData.SurfaceVelocity)/2,0,1);
         float flightAccel = craftScript.FlightData.Grounded ? groundedSpeedMultiplier*(float)craftScript.FlightData.AccelerationMagnitude : (float)Vector3d.Magnitude(craftScript.FlightData.Acceleration - craftScript.FlightData.Gravity);
         float accelRumbleIntensity = ModSettings.Instance.accelStrength * flightAccel / 100;
-        RumblePulse(ModSettings.Instance.accelMotor, accelRumbleIntensity, Time.deltaTime);
+
+        RumblePulse(1, accelRumbleIntensity, Time.deltaTime);
     }
 
-    public void RumblePulse(int index, float intensity, float duration)
+    private void OnStageActivated(ICommandPod source, int stageActivated) //staging rumble
+    {
+        if (ModSettings.Instance.stagingRumble)
+        {
+            RumblePulse(0,2f,0.25f);
+        }
+    }
+
+    private void OnExplosionCreated(object sender, EventArgs e) //explosion rumble
+    {
+        if (ModSettings.Instance.explosionRumble)
+        {
+            RumblePulse(0,3f,0.35f);
+        }
+    }
+
+    public void RumblePulse(int index, float intensity, float duration) //sending rumble to player
     {
         float intensityClamped = Mathf.Clamp(ModSettings.Instance.RumbleIntensity * intensity, 0, ModSettings.Instance.IntensityMax);
         player.SetVibration(index, intensityClamped, duration);
     }
 
 
-    private void OnStageActivated(ICommandPod source, int stageActivated)
-    {
-        if (ModSettings.Instance.stagingRumble)
-        {
-            RumblePulse(ModSettings.Instance.shockMotor,2f,0.25f);
-        }
-    }
-
-    private void OnExplosionCreated(object sender, EventArgs e)
-    {
-        if (ModSettings.Instance.explosionRumble)
-        {
-            RumblePulse(ModSettings.Instance.shockMotor,3f,0.35f);
-        }
-    }
+    
 
 
     private void OnCraftChanged(ICraftNode craftnode)
