@@ -1,0 +1,8 @@
+{
+	"name": "Rumbler",
+	"references": [
+		"UnityEngine.UI",
+		"Unity.TextMeshPro",
+		"Unity.Mathematics"
+	]
+}
