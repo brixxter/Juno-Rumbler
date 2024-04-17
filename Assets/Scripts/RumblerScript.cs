@@ -48,14 +48,14 @@ public class RumblerScript : MonoBehaviour
         float flightAccel = craftScript.FlightData.Grounded ? groundedSpeedMultiplier*(float)craftScript.FlightData.AccelerationMagnitude : (float)Vector3d.Magnitude(craftScript.FlightData.Acceleration - craftScript.FlightData.Gravity);
         float accelRumbleIntensity = ModSettings.Instance.accelStrength * flightAccel / 100;
 
-        RumblePulse(1, accelRumbleIntensity, Time.deltaTime);
+        if (accelRumbleIntensity > 0.01f) RumblePulse(ModSettings.Instance.accelIndex, accelRumbleIntensity, Time.deltaTime);  
     }
 
     private void OnStageActivated(ICommandPod source, int stageActivated) //staging rumble
     {
         if (ModSettings.Instance.stagingRumble)
         {
-            RumblePulse(0,2f,0.25f);
+            RumblePulse(ModSettings.Instance.shockIndex, 2f, 0.25f);
         }
     }
 
@@ -63,7 +63,7 @@ public class RumblerScript : MonoBehaviour
     {
         if (ModSettings.Instance.explosionRumble)
         {
-            RumblePulse(0,3f,0.35f);
+            RumblePulse(ModSettings.Instance.shockIndex, 3f, 0.35f);
         }
     }
 
@@ -72,10 +72,6 @@ public class RumblerScript : MonoBehaviour
         float intensityClamped = Mathf.Clamp(ModSettings.Instance.RumbleIntensity * intensity, 0, ModSettings.Instance.IntensityMax);
         player.SetVibration(index, intensityClamped, duration);
     }
-
-
-    
-
 
     private void OnCraftChanged(ICraftNode craftnode)
     {

@@ -48,9 +48,8 @@ namespace Assets.Scripts
         public BoolSetting stagingRumble { get; private set; }
         public BoolSetting accelRumble { get; private set; }
         public NumericSetting<float> accelStrength { get; private set; }
-
-        public NumericSetting<int> accelMotor { get; private set; }
-        public NumericSetting<int> shockMotor { get; private set; }
+        public NumericSetting<int> accelIndex { get; private set; }
+        public NumericSetting<int> shockIndex { get; private set; }
 
         /// <summary>
         /// Initializes the settings in the category.
@@ -86,7 +85,13 @@ namespace Assets.Scripts
                 .SetDescription("Strength of acceleration rumble")
                 .SetDefault(1f);
 
+            this.accelIndex = this.CreateNumeric<int>("Acceleration Motor Index", 0, 7, 1)
+                .SetDescription("Motor index to be used for acceleration rumble. Leave this at default unless you can't feel it")
+                .SetDefault(1);
 
+            this.shockIndex = this.CreateNumeric<int>("Shock Motor Index", 0, 7, 1)
+            .SetDescription("Motor index to be used for staging / explosion rumble. Leave this at default unless you can't feel it")
+            .SetDefault(0);
         }
     }
 }
